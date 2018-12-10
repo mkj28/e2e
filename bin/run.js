@@ -56,7 +56,7 @@ runner.exec().then((results) => {
   gracefullyExit()
 }).catch((err) => {
   console.error(err.stack || err)
-  datadog.sendMetric(`test_failure.${err.message}`, 1)
+  datadog.incrementMetric(`test_failure.${err.message}`)
   process.exitCode = 1
   gracefullyExit()
 })
