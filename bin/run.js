@@ -20,6 +20,7 @@ const path = require('path')
 
 const findTests = require('../lib/find-tests')
 const runTests = require('../lib')
+const { datadog } = require('../lib/datadog')
 
 const tests = findTests(program.args)
 
@@ -55,6 +56,7 @@ runner.exec().then((results) => {
   gracefullyExit()
 }).catch((err) => {
   console.error(err.stack || err)
+  datadog.sendMetric(`test_failure.${err.message}`, 1)
   process.exitCode = 1
   gracefullyExit()
 })
