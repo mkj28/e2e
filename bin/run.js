@@ -6,6 +6,7 @@ const program = require('commander')
   .version(require('../package.json').version)
   .usage('[options] <tests>')
   .option('--headless', 'run local tests headlessly')
+  .option('-p, --plugin <filename>', 'add a plugin', String)
   .option('-s, --sauce', 'run Sauce Labs tests')
   .option('-so, --sauce-only', 'only run tests on Sauce Labs')
   .option('-b, --browsers <names>', 'only run tests specified for these browsers')
@@ -20,7 +21,6 @@ const path = require('path')
 
 const findTests = require('../lib/find-tests')
 const runTests = require('../lib')
-const { datadog } = require('../lib/datadog')
 
 const tests = findTests(program.args)
 
@@ -56,7 +56,6 @@ runner.exec().then((results) => {
   gracefullyExit()
 }).catch((err) => {
   console.error(err.stack || err)
-  datadog.incrementMetric(`test_failure.${err.message}`)
   process.exitCode = 1
   gracefullyExit()
 })
